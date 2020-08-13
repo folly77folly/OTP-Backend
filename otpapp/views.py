@@ -167,3 +167,6 @@ def update_otp(phone, otp):
     serializer = UserSerializer(user_obj, data = update_data, partial = True)
     if serializer.is_valid():
         serializer.save()
+
+class Booking(APIView):
+    pass
