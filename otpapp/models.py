@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+import uuid
 
 from .managers import CustomUserManager
 
@@ -27,12 +28,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.phone_no
 
 class Booking(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    name = models.CharField( max_length=255)
+    name = models.CharField( max_length=100)
     address = models.CharField( max_length=255)
-    phone_no = models.FloatField(default = 0.00)
+    phone_no = models.CharField(max_length=17)
     appointment_date = models.DateTimeField(blank=True)
-    photos = models.DateTimeField(blank=True)
+    photos = models.ImageField(upload_to='images')
     comment = models.TextField()
 
 class SendSMS(models.Model):

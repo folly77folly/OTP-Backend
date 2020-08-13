@@ -77,6 +77,9 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 #auth user model
 AUTH_USER_MODEL = 'otpapp.User'
 
+#static File
+
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 

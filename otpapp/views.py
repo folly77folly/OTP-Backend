@@ -79,8 +79,8 @@ class VerifyUser(APIView):
         if user is None :
             response = {"message" : "Incorrect Phone Number"}
             return Response(response, status = status.HTTP_400_BAD_REQUEST)
-        # sms = send_twilio_message(phone, message)
-        # print(sms)
+        sms = send_twilio_message(phone, message)
+        print(sms)
         #update the userprofile with OTP
         update_otp(phone, OTP)
         response = {
@@ -108,6 +108,46 @@ class LoginUser(APIView):
             }
         # update_last_login(email)
         return Response(response, status =  status.HTTP_200_OK)
+
+class Bookings(APIView):
+    """
+    List all users, or create a new user.
+    """
+    def post(self, request, format = None):
+        data = request.data
+        name = data['name']
+        address = data['address']
+        phone_no = data['phone_no']
+        appointment_date = data['appointment_date']
+        photos = data['photos']
+        comment = data['comment']
+        
+        booking_details = {
+            'user': 1,
+            'name':name,
+            'address':address,
+            'phone_no':phone_no,
+            'appointment_date':appointment_date,
+            'photos':photos,
+            'comment':comment,
+        }
+
+        # converts querydict to original dict
+        # photos = dict((request.data).lists())['photos']
+        # flag = 1
+        # arr = []
+        # for img_name in photos:
+        #     modified_data = modify_input_for_multiple_files(property_id,img_name)
+
+        serializer = BookingSerializer(data = booking_details)
+        if serializer.is_valid():
+            serializer.save()
+            #send notification
+            message = {'message':"upload successful"}
+            return Response(message, status = status.HTTP_200_OK)
+  
+        message = {'message':"error"}
+        return Response(message, status = status.HTTP_400_BAD_REQUEST)
 
 
 def get_token(request):
@@ -168,5 +208,9 @@ def update_otp(phone, otp):
     if serializer.is_valid():
         serializer.save()
 
-class Booking(APIView):
-    pass
+
+def modify_input_for_multiple_files(property_id, image):
+    dict = {}
+    dict['property_id'] = property_id
+    dict['image'] = image
+    return dict
